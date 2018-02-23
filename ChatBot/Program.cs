@@ -12,7 +12,7 @@ namespace ChatBot
 {
     class Program
     {
-        //public string token = "Mzg2NDgwNjMwOTUyNjI0MTI5.DQQigw.dJCaz4Q7eMyHgy2CPFfXFODdzS4";
+        
         public Random rnd = new Random();
         public char prefix = ';';
 
