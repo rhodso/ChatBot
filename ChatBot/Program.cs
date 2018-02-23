@@ -7,19 +7,18 @@ using Discord.Commands;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System.Linq;
-using RedditSharp;
 
 namespace ChatBot
 {
     class Program
     {
+        //public string token = "Mzg2NDgwNjMwOTUyNjI0MTI5.DQQigw.dJCaz4Q7eMyHgy2CPFfXFODdzS4";
         public Random rnd = new Random();
-        public string token = "Mzg2NDgwNjMwOTUyNjI0MTI5.DQQigw.dJCaz4Q7eMyHgy2CPFfXFODdzS4";
         public char prefix = ';';
-        
 
         public void Setup()
         {
+
             AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
             {
 
@@ -53,20 +52,28 @@ namespace ChatBot
 
         public async Task Start()
         {
-            Setup();
-
+            //Set up console colours
             Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.Black;
+
             Console.WriteLine("===  Initializing ChatBot   ===");
             ConsoleLog("Starting process...");
+            Setup();
+            ConsoleLog("Setup complete!");
+
+            //Get the token for the bot from a file
+            StreamReader file = new StreamReader(Environment.CurrentDirectory + "\\Token.txt");
+            string token = file.ReadLine();
+
+            ConsoleLog("Sucessfully got token from file");
+
             client = new DiscordSocketClient(new DiscordSocketConfig
             {
                 WebSocketProvider = Discord.Net.Providers.WS4Net.WS4NetProvider.Instance,
                 LogLevel = LogSeverity.Info
             });
 
-
-
-            ConsoleLog("Token established");
+            ConsoleLog("Client set up");
 
             commands = new CommandService();
             ConsoleLog("Set commands as new CommandService");
@@ -80,12 +87,11 @@ namespace ChatBot
             ConsoleLog("Installed Commands");
 
             client.Log += Log;
-            ConsoleLog("The Logging thing");
 
             await client.LoginAsync(TokenType.Bot, token);
             await client.StartAsync();
 
-            ConsoleLog("Logged in");
+            ConsoleLog("Establishing connection...");
 
             await Task.Delay(-1);
         }
@@ -128,8 +134,8 @@ namespace ChatBot
             if (msg == null) return;
             // Create a number to track where the prefix ends and the command begins
             int pos = 0;
+            IServiceProvider service = null;
             // Determine if the message is a command, based on if it starts with the prefix character or a mention prefix
-
             //ConsoleLog("Message content 1st char is: " + msg.Content.ToString().Substring(0, 1));
 
             string firstChar = msg.Content.ToString().Substring(0, 1);
@@ -139,23 +145,25 @@ namespace ChatBot
             {
                 ConsoleLog("Message is a command");
 
-                if (messageParam.Content.Equals(";ping"))
+                //Ping
+                if (messageParam.Content.Equals(prefix + "ping"))
                 {
                     ConsoleLog("Running ping command...");
                     await msg.Channel.SendMessageAsync(Commands.Ping());
                 }
-                if (messageParam.Content.Equals(";wednesday"))
+
+                //Wednesday
+                if (messageParam.Content.Equals(prefix + "wednesday"))
                 {
                     ConsoleLog("Running wednesday command...");
                     await msg.Channel.SendMessageAsync(Commands.Wednesday());
                 }
-                if (messageParam.Content.Equals(";DeleteMusic"))
-                {
-                    ConsoleLog("Running DeleteMusic command...");
 
-                   
-                    
-                    
+                //ToggleReplies
+                if (messageParam.Content.Equals(prefix + "togglereplies"))
+                {
+                    ConsoleLog("Toggling replies...");
+                    await msg.Channel.SendMessageAsync(Commands.ToggleReplies());
                 }
 
                 /*
@@ -170,7 +178,6 @@ namespace ChatBot
             
                 */
 
-
             }
             else if (msg.Author.Username.Equals("ChatBot"))
             {
@@ -179,19 +186,22 @@ namespace ChatBot
             else
             {
 
-                int decider = rnd.Next(1, 10);
-
-                if (decider == 5)
+                if (Commands.RandomReplyToggle == true)
                 {
-                    ConsoleLog("Message recieved, will be replied to");
 
-                    await msg.Channel.SendMessageAsync(RandomResponse.GetRandomReply() + MentionUtils.MentionUser(msg.Author.Id));
-                    return;
-                }
-                else
-                {
-                    ConsoleLog("Message recieved, will not be replied to");
-                    return;
+                    int decider = rnd.Next(1, 10);
+                    if (decider == 5)
+                    {
+                        ConsoleLog("Message recieved, will be replied to");
+
+                        await msg.Channel.SendMessageAsync(RandomResponse.GetRandomReply() + MentionUtils.MentionUser(msg.Author.Id));
+                        return;
+                    }
+                    else
+                    {
+                        ConsoleLog("Message recieved, will not be replied to");
+                        return;
+                    }
                 }
             }
 
@@ -206,6 +216,28 @@ namespace ChatBot
     }
     class Commands
     {
+        public static bool RandomReplyToggle = false;
+
+        internal static bool GetReplies()
+        {
+            return RandomReplyToggle;
+        }
+
+        internal static string ToggleReplies()
+        {
+            {
+                if (RandomReplyToggle == false)
+                {
+                    RandomReplyToggle = true;
+                    return "Random replies turned on";
+                }
+                else
+                {
+                    RandomReplyToggle = false;
+                    return "Random replies turned off";
+                }
+            }
+        }
 
         internal static string Ping()
         {
@@ -224,6 +256,8 @@ namespace ChatBot
                 return "It is NOT wednesday, my dudes";
             }
         }
+
+
     }
     class RandomResponse
     {
@@ -253,30 +287,4 @@ namespace ChatBot
             }
         }
     }
-
-    //Reddit integration
-    /*
-    class RedditPost
-    {
-       
-        internal static string GetPost()
-        {
-            //var webagent = new BotWebAgent("rhodsoBot", "qazwsxedc", "IGAjcEE-70TWfw", "zu64wRhKJHCoGHX0HDLh2L34Idk", "http://127.0.0.1");
-            //var reddit = new Reddit(webagent, false);
-            var reddit = new Reddit();
-            var subreddit = reddit.GetSubreddit("/r/eyebleach");
-            foreach (var post in subreddit.New.Take(1))
-            {
-                
-            }
-
-            
-
-
-            return "";
-        }
-
-    }
-    */
-    
 }
