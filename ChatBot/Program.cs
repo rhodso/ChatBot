@@ -67,6 +67,7 @@ namespace ChatBot
 
             ConsoleLog("Sucessfully got token from file");
 
+            ConsoleLog("Establishing Client");
             client = new DiscordSocketClient(new DiscordSocketConfig
             {
                 WebSocketProvider = Discord.Net.Providers.WS4Net.WS4NetProvider.Instance,
@@ -89,7 +90,10 @@ namespace ChatBot
             client.Log += Log;
 
             await client.LoginAsync(TokenType.Bot, token);
+            ConsoleLog("Logged in");
+
             await client.StartAsync();
+            ConsoleLog("Client started");
 
             ConsoleLog("Establishing connection...");
 
@@ -112,6 +116,7 @@ namespace ChatBot
                     break;
                 case LogSeverity.Verbose:
                 case LogSeverity.Debug:
+
                     Console.ForegroundColor = ConsoleColor.White;
                     break;
             }
@@ -164,21 +169,9 @@ namespace ChatBot
                 {
                     ConsoleLog("Toggling replies...");
                     await msg.Channel.SendMessageAsync(Commands.ToggleReplies());
-                }
-
-                /*
-                                
-                // Create a Command Context
-                var context = new CommandContext(client, msg);
-                IServiceProvider service = null;
-                // Execute the command. (result does not indicate a return value, rather an object stating if the command executed successfully)
-                var result = await commands.ExecuteAsync(context, pos, service);
-                if (!result.IsSuccess)
-                    await context.Channel.SendMessageAsync(result.ErrorReason);
-            
-                */
-
+                }    
             }
+
             else if (msg.Author.Username.Equals("ChatBot"))
             {
                 return;
@@ -210,7 +203,12 @@ namespace ChatBot
         public void ConsoleLog(string message)
         {
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(DateTime.Now.TimeOfDay.Hours.ToString("00") + ":" + DateTime.Now.TimeOfDay.Minutes.ToString("00") + ":" + DateTime.Now.TimeOfDay.Seconds.ToString("00") + " " + "{0}", message);
+            Console.WriteLine(
+                DateTime.Now.TimeOfDay.Hours.ToString("00") + ":" 
+                + DateTime.Now.TimeOfDay.Minutes.ToString("00") + ":" 
+                + DateTime.Now.TimeOfDay.Seconds.ToString("00") +":" 
+                + DateTime.Now.TimeOfDay.Milliseconds.ToString("000") + "\t" 
+                + "{0}", message);
         }
 
     }
@@ -256,8 +254,6 @@ namespace ChatBot
                 return "It is NOT wednesday, my dudes";
             }
         }
-
-
     }
     class RandomResponse
     {
