@@ -6,9 +6,17 @@ from discord.ext import commands
 import platform
 import datetime
 import random
+import praw
 
 #Set prefix character
-prefix = "|"
+prefix = ";"
+
+#Reddit variables
+CLID = "IGAjcEE-70TWfw"
+SECT = "zu64wRhKJHCoGHX0HDLh2L34Idk"
+AGNT = "ChatBot"
+
+reddit = praw.Reddit(client_id=CLID, client_secret=SECT, user_agent=AGNT)
 
 #Def log method
 def log(Message):
@@ -52,19 +60,43 @@ async def on_message(message):
             await client.send_message(client.get_channel(message.channel.id),'Idk, man. Just fuck around')
 
         #Ping command
-        if(message.content == (prefix + "ping")):
+        elif(message.content == (prefix + "ping")):
             log("Running ping command...")
             await client.send_message(client.get_channel(message.channel.id), 'Pong!')
 
 		#Ooer command
-        if(message.content == (prefix + "ooer")):
+        elif(message.content == (prefix + "ooer")):
             log("Running Ooer command...")
             await client.send_message(client.get_channel(message.channel.id), '@everyone Ooer')
+        
+        #getPost Command
+        elif(message.content[:8] == (prefix + "getPost")):
+            log("Running getPost command...")
+            SplitMessage = message.content.split(" ")
+
+            targetSub = "aww"
+            NumberOfPosts = 1
+
+            try:
+                targetSub = SplitMessage[1]
+                NumberOfPosts = int(SplitMessage[2])
+
+            except:
+                log("Something went wrong in getPost command. Parameters probably not typed correctly")
+                await client.send_message(client.get_channel(message.channel.id), 'Something went wrong, did you type the parameters correctly?')
                 
-    elif(random.randint(1,10) == 5):
-        #Message is not a command, roll to see if it's a random response
-        log("Message will be replied to")
-        await client.send_message(client.get_channel(message.channel.id), 'Fuck you, ' + message.author.mention)
+
+            subreddit = reddit.subreddit(targetSub)
+            
+            for submission in subreddit.hot(limit=NumberOfPosts): #Need to figure out how to not get stickied posts
+                url = submission.url
+                await client.send_message(client.get_channel(message.channel.id), url)
+
+        elif(random.randint(1,10) == 5):
+            if(message.author != "ChatBot"):
+                #Message is not a command, roll to see if it's a random response
+                log("Message will be replied to")
+                await client.send_message(client.get_channel(message.channel.id), 'Fuck you, ' + message.author.mention)
     
     else:
         pass
