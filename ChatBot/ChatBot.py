@@ -19,6 +19,7 @@ reddit = praw.Reddit(client_id=CLID, client_secret=SECT, user_agent=AGNT)
 
 #Other vars
 wordin = ""
+listOfWords = ""
 
 #Def log method
 def log(Message):
@@ -109,6 +110,7 @@ async def on_message(message):
             if(SplitMessage[1] == ""):
                 await client.send_message(client.get_channel(message.channel.id), "Something went wrong, did you type the parameters correctly?")
             else:
+                listOfWords = ""
                 wordin = SplitMessage[1]
                 wordin = wordin.upper()
                 WordFile=open("wordlist.txt", "r")
@@ -116,8 +118,12 @@ async def on_message(message):
                     line = line.strip()
                     if checkWord(line,wordin):
                         if(len(line)>2):
-                            await client.send_message(client.get_channel(message.channel.id), line)
+                            listOfWords = listOfWords + line + ", "
             WordFile.close()
+            if(listOfWords == ""):
+                await client.send_message(client.get_channel(message.channel.id), "No anagrams found")
+            else:
+                await client.send_message(client.get_channel(message.channel.id),listOfWords[:(len(listOfWords) -2)])
             
         #Ping command
         elif(message.content == (prefix + "ping")):
@@ -176,7 +182,8 @@ async def on_message(message):
                     await client.send_message(client.get_channel(message.channel.id), "Post " + i + "/" + NumberOfPosts + ": " + url)
             
                 await client.send_message(client.get_channel(message.channel.id), "Request " + message.content + " finished")
-
+        
+        #Random response
         elif(random.randint(1,10) == 5):
             if(message.author != "ChatBot"):
                 #Message is not a command, roll to see if it's a random response
