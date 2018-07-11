@@ -66,9 +66,41 @@ async def on_message(message):
         #   await client.send_message(client.get_channel(message.channel.id), [Message (result of command)])
 
         #Help command
-        if(message.content == (prefix + "help")):
+        if(message.content[:5] == (prefix + "help")):
             log("Running help command...")
-            await client.send_message(client.get_channel(message.channel.id),'Idk, man. Just fuck around')
+            SplitMessage = message.content.split(" ")
+            if(SplitMessage[1] == ""):
+                await client.send_message(client.get_channel(message.channel.id),'Idk, man. Just fuck around')
+            
+            elif(SplitMessage[1] == "anagram"):
+                await client.send_message(client.get_channel(message.channel.id),'Usage \';anagram [Word]\' where word is the word you want anagrams of')
+
+            elif(SplitMessage[1] == "ping"):
+                await client.send_message(client.get_channel(message.channel.id),'This command is mostly used to test if the bot is working. If it replies ping, then all is well')
+
+            elif(SplitMessage[1] == "ooer"):
+                await client.send_message(client.get_channel(message.channel.id),'Use this command to tell everyone a VERY important message')
+
+            elif(SplitMessage[1] == "wednesday"):
+                await client.send_message(client.get_channel(message.channel.id),'Is it wednesday, my dudes?')
+
+            elif(SplitMessage[1] == "getPost"):
+                await client.send_message(client.get_channel(message.channel.id),'Usage: \'getPost [Sub] [Posts]\' where Sub is the target subreddit, and Posts is the number of posts to get')
+                await client.send_message(client.get_channel(message.channel.id),'Posts is limited to 20 to prevent spam (looking at you, sephie)')
+                await client.send_message(client.get_channel(message.channel.id),'The target subreddit has to be publicly available')
+
+            elif(SplitMessage[1] == "list"):
+                await client.send_message(client.get_channel(message.channel.id),'Commands list: (Type Type \';help [name of command]\' to get help for that command)')
+                await client.send_message(client.get_channel(message.channel.id),'anagram')
+                await client.send_message(client.get_channel(message.channel.id),'ping')
+                await client.send_message(client.get_channel(message.channel.id),'ooer')
+                await client.send_message(client.get_channel(message.channel.id),'wednesday')
+                await client.send_message(client.get_channel(message.channel.id),'getPost')
+                await client.send_message(client.get_channel(message.channel.id),'Also, this bot has a 10% chance of giving a random response to any message that is not a command')
+
+            else:
+                await client.send_message(client.get_channel(message.channel.id),'Type \';help [name of command]\' to get help for that command')
+                await client.send_message(client.get_channel(message.channel.id),'Type \';help list\' to get a list of commands')
 
         #Anagram command
         elif(message.content[:8] == (prefix + "anagram")):
