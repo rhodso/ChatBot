@@ -144,6 +144,12 @@ async def on_message(message):
                 await client.send_message(client.get_channel(message.channel.id), "https://i.redd.it/jk7kw2qzhv711.jpg")
             else:
                 await client.send_message(client.get_channel(message.channel.id), "It is not wednesday")
+        
+        #Copypasta command
+        elif(message.content == (prefix + "copypasta")):
+            log("Running copypasta command")
+            submission = reddit.subreddit('copypasta').random()
+            await client.send_message(client.get_channel(message.channel.id), submission.selftext)
 
         #getPost command
         elif(message.content[:8] == (prefix + "getPost")):
