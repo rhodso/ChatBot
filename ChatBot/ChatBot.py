@@ -174,7 +174,7 @@ async def on_message(message):
                 await client.send_message(client.get_channel(message.channel.id), 'Something went wrong, did you type the parameters correctly?')
             
             #Limits
-            if((messaage.author != "rhodso") & (NumberOfPosts > 20)):
+            if((message.author != "rhodso") & (NumberOfPosts > 20)):
                 await client.send_message(client.get_channel(message.channel.id), "Too many posts requested. Post requests limited to 20 to prevent spam")
             else:
                 #Get subreddit
@@ -185,7 +185,7 @@ async def on_message(message):
                 for submission in subreddit.hot(limit=NumberOfPosts): #Need to figure out how to not get stickied posts
                     i = i + 1
                     url = submission.url
-                    await client.send_message(client.get_channel(message.channel.id), "Post " + i + "/" + NumberOfPosts + ": " + url)
+                    await client.send_message(client.get_channel(message.channel.id), "Post " + str(i) + "/" + str(NumberOfPosts) + ": " + url)
             
                 await client.send_message(client.get_channel(message.channel.id), "Request " + message.content + " finished")
         
