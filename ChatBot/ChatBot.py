@@ -15,8 +15,10 @@ prefix = ";"
 CLID = "IGAjcEE-70TWfw"
 SECT = "zu64wRhKJHCoGHX0HDLh2L34Idk"
 AGNT = "ChatBot"
-
 reddit = praw.Reddit(client_id=CLID, client_secret=SECT, user_agent=AGNT)
+
+#Other vars
+wordin = ""
 
 #Def log method
 def log(Message):
@@ -75,6 +77,7 @@ async def on_message(message):
             if(SplitMessage[1] == ""):
                 await client.send_message(client.get_channel(message.channel.id), "Something went wrong, did you type the parameters correctly?")
             else:
+                wordin = SplitMessage[1]
                 wordin = wordin.upper()
                 WordFile=open("wordlist.txt", "r")
                 for line in WordFile:
