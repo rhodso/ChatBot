@@ -77,10 +77,10 @@ async def on_message(message):
                 await client.send_message(client.get_channel(message.channel.id),'Usage \';anagram [Word]\' where word is the word you want anagrams of')
 
             elif(SplitMessage[1] == "ping"):
-                await client.send_message(client.get_channel(message.channel.id),'This command is mostly used to test if the bot is working. If it replies ping, then all is well')
+                await client.send_message(client.get_channel(message.channel.id),'Mostly used to test if the bot is working. If it replies ping, then all is well')
 
             elif(SplitMessage[1] == "ooer"):
-                await client.send_message(client.get_channel(message.channel.id),'Use this command to tell everyone a VERY important message')
+                await client.send_message(client.get_channel(message.channel.id),'Tells everyone a VERY important message')
 
             elif(SplitMessage[1] == "wednesday"):
                 await client.send_message(client.get_channel(message.channel.id),'Is it wednesday, my dudes?')
@@ -90,6 +90,9 @@ async def on_message(message):
                 await client.send_message(client.get_channel(message.channel.id),'Posts is limited to 20 to prevent spam (looking at you, sephie)')
                 await client.send_message(client.get_channel(message.channel.id),'The target subreddit has to be publicly available')
 
+            elif(SplitMessage[1] == "copypasta"):
+                await client.send_message(client.get_channel(message.channel.id), "Gets a random copypasta from r/copypasta")
+
             elif(SplitMessage[1] == "list"):
                 await client.send_message(client.get_channel(message.channel.id),'Commands list: (Type Type \';help [name of command]\' to get help for that command)')
                 await client.send_message(client.get_channel(message.channel.id),'anagram')
@@ -97,6 +100,7 @@ async def on_message(message):
                 await client.send_message(client.get_channel(message.channel.id),'ooer')
                 await client.send_message(client.get_channel(message.channel.id),'wednesday')
                 await client.send_message(client.get_channel(message.channel.id),'getPost')
+                await client.send_message(client.get_channel(message.channel.id),'copypasta')
                 await client.send_message(client.get_channel(message.channel.id),'Also, this bot has a 10% chance of giving a random response to any message that is not a command')
 
             else:
@@ -174,7 +178,7 @@ async def on_message(message):
                 await client.send_message(client.get_channel(message.channel.id), 'Something went wrong, did you type the parameters correctly?')
             
             #Limits
-            if((message.author != "rhodso") & (NumberOfPosts > 20)):
+            if((messaage.author != "rhodso") & (NumberOfPosts > 20)):
                 await client.send_message(client.get_channel(message.channel.id), "Too many posts requested. Post requests limited to 20 to prevent spam")
             else:
                 #Get subreddit
@@ -185,7 +189,7 @@ async def on_message(message):
                 for submission in subreddit.hot(limit=NumberOfPosts): #Need to figure out how to not get stickied posts
                     i = i + 1
                     url = submission.url
-                    await client.send_message(client.get_channel(message.channel.id), "Post " + str(i) + "/" + str(NumberOfPosts) + ": " + url)
+                    await client.send_message(client.get_channel(message.channel.id), "Post " + i + "/" + NumberOfPosts + ": " + url)
             
                 await client.send_message(client.get_channel(message.channel.id), "Request " + message.content + " finished")
         
