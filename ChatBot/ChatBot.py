@@ -193,12 +193,11 @@ async def on_message(message):
             
                 await client.send_message(client.get_channel(message.channel.id), "Request " + message.content + " finished")
         
-        #Random response
-        elif(random.randint(1,10) == 5):
-            if(message.author != "ChatBot"):
-                #Message is not a command, roll to see if it's a random response
-                log("Message will be replied to")
-                await client.send_message(client.get_channel(message.channel.id), 'Fuck you, ' + message.author.mention)
+    #Random response
+    elif(random.randint(1,10) == 5):
+        if(message.author != "ChatBot"):    
+            log("Message will be replied to")
+            await client.send_message(client.get_channel(message.channel.id), 'Fuck you, ' + message.author.mention)
     
     else:
         pass
