@@ -44,6 +44,7 @@ async def on_ready():
     log('Ready!')
     return await client.change_presence(game=discord.Game(name='with myself')) 
 
+#Cheks word for anagram
 def checkWord(word, chkword):
     for letter in word:
         if letter in chkword:
@@ -52,7 +53,19 @@ def checkWord(word, chkword):
             return 0
     return 1
 
+#Scans words in a message
+def scanMessage(msg):
+    #Open file and read array
+    file = open('scanwords.txt', 'r')
+    for line in file:
+        if(line in msg):
 
+            file.close()
+            return True
+
+    file.close()
+    return False
+    
 #Commands
 @client.event
 async def on_message(message):
@@ -133,13 +146,6 @@ async def on_message(message):
         elif (message.content == prefix + "target"):
             log("Runnning target command...")
             await client.send_message(client.get_channel(message.channel.id), message.channel.id)
-        
-#        #Send Message command
-#        elif (message.content[:12] == prefix + "sendMessage"):
-#            SplitMessage = message.content.split(" ")
-#            log("Runing sendMessage command")
-#            log("Sending message to " + str(client.get_channel(SplitMessage[1])))
-#            await client.send_message((client.get_channel(SplitMessage[1]), SplitMessage[2])
 
         #Spam a message
         elif (message.content[:5] == prefix + "spam"):
@@ -203,11 +209,7 @@ async def on_message(message):
                 await client.send_message(client.get_channel(message.channel.id), 'Something went wrong, did you type the parameters correctly?')
             
             #Limits
-<<<<<<< HEAD
-            if((message.author != "rhodso") and (NumberOfPosts > 20)):
-=======
             if((messaage.author != "rhodso") & (NumberOfPosts > 20)):
->>>>>>> 3592692006779fcf402cec01d183640af881aee6
                 await client.send_message(client.get_channel(message.channel.id), "Too many posts requested. Post requests limited to 20 to prevent spam")
             else:
                 #Get subreddit
@@ -221,17 +223,19 @@ async def on_message(message):
                     await client.send_message(client.get_channel(message.channel.id), "Post " + i + "/" + NumberOfPosts + ": " + url)
             
                 await client.send_message(client.get_channel(message.channel.id), "Request " + message.content + " finished")
-        
+
+    #Read keyword in message response commands
+    elif(scanMessage(message.content)):
+        await client.send_message(client.get_channel(message.channel.id), "_Giggity_")
+    
     #Random response
-    elif(random.randint(1,10) == 5):
+    elif(random.randint(1,10) < 2):
         if(message.author != "ChatBot"):    
             log("Message will be replied to")
             await client.send_message(client.get_channel(message.channel.id), 'Fuck you, ' + message.author.mention)
     
     else:
         pass
-    
-    
 
 #Run bot
 client.run(str(getToken()))
