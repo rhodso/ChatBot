@@ -229,15 +229,13 @@ async def on_message(message):
         await client.send_message(client.get_channel(message.channel.id), "_Giggity_")
     
     #Random response
-    elif(random.randint(1,10) == 5):
+    elif(random.randint(1,10) < 2):
         if(message.author != "ChatBot"):    
             log("Message will be replied to")
             await client.send_message(client.get_channel(message.channel.id), 'Fuck you, ' + message.author.mention)
     
     else:
         pass
-    
-    
 
 #Run bot
 client.run(str(getToken()))
