@@ -109,7 +109,7 @@ async def on_message(message):
 
         #Anagram command
         elif(message.content[:8] == (prefix + "anagram")):
-            log("Running anagram command")
+            log("Running anagram command...")
             SplitMessage = message.content.split(" ")
             if(SplitMessage[1] == ""):
                 await client.send_message(client.get_channel(message.channel.id), "Something went wrong, did you type the parameters correctly?")
@@ -128,11 +128,36 @@ async def on_message(message):
                 await client.send_message(client.get_channel(message.channel.id), "No anagrams found")
             else:
                 await client.send_message(client.get_channel(message.channel.id),listOfWords[:(len(listOfWords) -2)])
-            
+        
+        #Targets a channel and get it's ID        
+        elif (message.content == prefix + "target"):
+            log("Runnning target command...")
+            await client.send_message(client.get_channel(message.channel.id), message.channel.id)
+        
+#        #Send Message command
+#        elif (message.content[:12] == prefix + "sendMessage"):
+#            SplitMessage = message.content.split(" ")
+#            log("Runing sendMessage command")
+#            log("Sending message to " + str(client.get_channel(SplitMessage[1])))
+#            await client.send_message((client.get_channel(SplitMessage[1]), SplitMessage[2])
+
+        #Spam a message
+        elif (message.content[:5] == prefix + "spam"):
+            log("Running Spam command...")
+            SplitMessage = message.content.split("|")
+            if((int(SplitMessage[1]) > 0 and int(SplitMessage[1]) < 21) or str(message.author.id) == "262753744280616960"):
+                for i in range(0, int(SplitMessage[1])):
+                    await client.send_message(client.get_channel(message.channel.id), SplitMessage[2])
+                await client.send_message(client.get_channel(message.channel.id), "Done")
+            else:
+                await client.send_message(client.get_channel(message.channel.id), 'Something went wrong, did you type the parameters correctly?')
+                await client.send_message(client.get_channel(message.channel.id), 'You can only spam 20 messages, unless you created this bot (rhodso)')
+
         #Ping command
         elif(message.content == (prefix + "ping")):
             log("Running ping command...")
             await client.send_message(client.get_channel(message.channel.id), 'Pong!')
+            #await client.send_message(client.get_channel(message.channel.id), str(message.author.id))
 
 		#Ooer command
         elif(message.content == (prefix + "ooer")):
@@ -151,7 +176,7 @@ async def on_message(message):
         
         #Copypasta command
         elif(message.content == (prefix + "copypasta")):
-            log("Running copypasta command")
+            log("Running copypasta command...")
             submission = reddit.subreddit('copypasta').random()
             await client.send_message(client.get_channel(message.channel.id), submission.selftext)
 
@@ -178,7 +203,11 @@ async def on_message(message):
                 await client.send_message(client.get_channel(message.channel.id), 'Something went wrong, did you type the parameters correctly?')
             
             #Limits
+<<<<<<< HEAD
+            if((message.author != "rhodso") and (NumberOfPosts > 20)):
+=======
             if((messaage.author != "rhodso") & (NumberOfPosts > 20)):
+>>>>>>> 3592692006779fcf402cec01d183640af881aee6
                 await client.send_message(client.get_channel(message.channel.id), "Too many posts requested. Post requests limited to 20 to prevent spam")
             else:
                 #Get subreddit
