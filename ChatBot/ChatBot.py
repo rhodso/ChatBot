@@ -44,7 +44,7 @@ async def on_ready():
     log('Ready!')
     return await client.change_presence(game=discord.Game(name='with myself')) 
 
-#Cheks word for anagram
+#Checks word for anagram
 def checkWord(word, chkword):
     for letter in word:
         if letter in chkword:
@@ -59,16 +59,16 @@ def scanMessage(msg):
     file = open('scanwords.txt', 'r')
     for line in file:
         if(line in msg):
-
             file.close()
             return True
-
     file.close()
     return False
     
 #Commands
 @client.event
 async def on_message(message):
+
+    #Named commands
     if(message.content[:1] == prefix):
         #If message starts with the prefix, it's a command. Handle it as such
 
@@ -147,7 +147,7 @@ async def on_message(message):
             log("Runnning target command...")
             await client.send_message(client.get_channel(message.channel.id), message.channel.id)
 
-        #Spam a message
+        #Spam command
         elif (message.content[:5] == prefix + "spam"):
             log("Running Spam command...")
             SplitMessage = message.content.split("|")
@@ -230,10 +230,12 @@ async def on_message(message):
     
     #Random response
     elif(random.randint(1,10) < 2):
-        if(message.author != "ChatBot"):    
+        if(str(message.author) != '386480630952624129'):    
             log("Message will be replied to")
-            await client.send_message(client.get_channel(message.channel.id), 'Fuck you, ' + message.author.mention)
-    
+            if(str(message.author) == '262753744280616960'):
+                await client.send_message(client.get_channel(message.channel.id), 'Praise you, ' + message.author.mention)
+            else:
+                await client.send_message(client.get_channel(message.channel.id), 'Fuck you, ' + message.author.mention)
     else:
         pass
 
