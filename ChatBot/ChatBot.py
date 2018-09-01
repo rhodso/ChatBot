@@ -55,14 +55,17 @@ def checkWord(word, chkword):
 
 #Scans words in a message
 def scanMessage(msg):
+    msg.lower()
+    StringConcat = [""]
     #Open file and read array
     file = open('scanwords.txt', 'r')
     for line in file:
+        line = line.replace('\n','')
+        line = line.lower()
         if(line in msg):
-            file.close()
-            return True
+            StringConcat.append(line)
     file.close()
-    return False
+    return StringConcat
     
 #Commands
 @client.event
@@ -225,8 +228,30 @@ async def on_message(message):
                 await client.send_message(client.get_channel(message.channel.id), "Request " + message.content + " finished")
 
     #Read keyword in message response commands
-    elif(scanMessage(message.content)):
-        await client.send_message(client.get_channel(message.channel.id), "_Giggity_")
+    elif(message.content != ""):
+        
+        if(str(message.author.id) != '386480630952624129'):
+            returnString = ""
+
+            ListOfWords = scanMessage(message.content)
+            if(len(ListOfWords) == 1):
+                pass
+
+            elif(len(ListOfWords) == 2):
+                 returnString = ":sweat_drops: _Giggity_ :sweat_drops:"
+        
+            elif(len(ListOfWords) == 3):
+                returnString = ":sweat_drops: _Giggity_ _Giggity_ :sweat_drops:"
+
+            else:
+                returnString = ":sweat_drops: _Giggity_ _Giggity_ _Goo_ :sweat_drops:"
+
+            for i in range(len(ListOfWords)):
+                if(ListOfWords[i] != ""):
+                    returnString = returnString + ", \'" + ListOfWords[i] + "\'"
+        
+            if(returnString != ""):
+                await client.send_message(client.get_channel(message.channel.id), returnString)
     
     #Random response
     elif(random.randint(1,10) < 2):
