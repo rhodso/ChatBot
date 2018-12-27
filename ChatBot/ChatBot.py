@@ -254,7 +254,7 @@ async def on_message(message):
                 await client.send_message(client.get_channel(message.channel.id), returnString)
     
     #Random response
-    elif(random.randint(1,10) < 2):
+    if(random.randint(1,10) < 2):
         if(str(message.author) != '386480630952624129'):    
             log("Message will be replied to")
             if(str(message.author) == '262753744280616960'):
