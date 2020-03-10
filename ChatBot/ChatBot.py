@@ -204,7 +204,7 @@ async def on_message(message):
                 NumberOfPosts = int(SplitMessage[2])
                 log(" |")
                 log(" ->Target sub = " + targetSub)
-                log("   Posts requested = " + NumberOfPosts)
+                log("   Posts requested = " + str(NumberOfPosts))
 
             #Throw exception if it goes wrong
             except:
