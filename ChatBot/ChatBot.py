@@ -7,6 +7,10 @@ import platform
 import datetime
 import random
 import praw
+import time
+
+#Maks switch
+maks = True
 
 #Set prefix character
 prefix = ";"
@@ -30,17 +34,19 @@ def getToken():
     tokenFile = open('token.txt','r')
     token = tokenFile.read()
     return token
-
+    
 #Define client
 client = Bot(description='', command_prefix=prefix, pm_help = False)
 
 #Startup sequence
 @client.event
 async def on_ready():
+    log('Current Discord.py Version: ' + str(discord.__version__))
+    log('Current Python Version: ' + str(platform.python_version()))
     log('Initialising...')
-    log('Logged in as '+client.user.name+' (ID:'+client.user.id+') | Connected to '+str(len(client.servers))+' servers | Connected to '+str(len(set(client.get_all_members())))+' users')
+    log('Logged in as '+client.user.name+' (ID:'+client.user.id+')')
+    log('Connected to '+str(len(set(client.get_all_members())))+' users in ' +str(len(client.servers))+' servers')
     log('')
-    log('Current Discord.py Version: {} | Current Python Version: {}'.format(discord.__version__, platform.python_version()))
     log('Ready!')
     return await client.change_presence(game=discord.Game(name='with myself')) 
 
@@ -122,7 +128,6 @@ async def on_message(message):
             else:
                 await client.send_message(client.get_channel(message.channel.id),'Type \';help [name of command]\' to get help for that command')
                 await client.send_message(client.get_channel(message.channel.id),'Type \';help list\' to get a list of commands')
-
         #Anagram command
         elif(message.content[:8] == (prefix + "anagram")):
             log("Running anagram command...")
@@ -144,6 +149,10 @@ async def on_message(message):
                 await client.send_message(client.get_channel(message.channel.id), "No anagrams found")
             else:
                 await client.send_message(client.get_channel(message.channel.id),listOfWords[:(len(listOfWords) -2)])
+        
+        elif (message.content == prefix + "author"):
+            log("Running author command...")
+            await client.send_message(client.get_channel(message.channel.id), str(message.author.id))
         
         #Targets a channel and get it's ID        
         elif (message.content == prefix + "target"):
@@ -168,7 +177,7 @@ async def on_message(message):
             await client.send_message(client.get_channel(message.channel.id), 'Pong!')
             #await client.send_message(client.get_channel(message.channel.id), str(message.author.id))
 
-		#Ooer command
+        #Ooer command
         elif(message.content == (prefix + "ooer")):
             log("Running Ooer command...")
             await client.send_message(client.get_channel(message.channel.id), '@everyone Ooer')
@@ -202,9 +211,8 @@ async def on_message(message):
             try:
                 targetSub = SplitMessage[1]
                 NumberOfPosts = int(SplitMessage[2])
-                log(" |")
-                log(" ->Target sub = " + targetSub)
-                log("   Posts requested = " + NumberOfPosts)
+                log(" Target sub = " + targetSub)
+                log(" Posts requested = " + str(NumberOfPosts))
 
             #Throw exception if it goes wrong
             except:
@@ -212,8 +220,8 @@ async def on_message(message):
                 await client.send_message(client.get_channel(message.channel.id), 'Something went wrong, did you type the parameters correctly?')
             
             #Limits
-            if((messaage.author != "rhodso") & (NumberOfPosts > 20)):
-                await client.send_message(client.get_channel(message.channel.id), "Too many posts requested. Post requests limited to 20 to prevent spam")
+            if((str(message.author.id) != "262753744280616960") & (NumberOfPosts > 50)):
+                await client.send_message(client.get_channel(message.channel.id), "Too many posts requested. Post requests limited to 50 to prevent spam")
             else:
                 #Get subreddit
                 subreddit = reddit.subreddit(targetSub)
@@ -223,9 +231,13 @@ async def on_message(message):
                 for submission in subreddit.hot(limit=NumberOfPosts): #Need to figure out how to not get stickied posts
                     i = i + 1
                     url = submission.url
-                    await client.send_message(client.get_channel(message.channel.id), "Post " + i + "/" + NumberOfPosts + ": " + url)
+                    await client.send_message(client.get_channel(message.channel.id), "Post " + str(i) + "/" + str(NumberOfPosts) + ": " + url)
             
                 await client.send_message(client.get_channel(message.channel.id), "Request " + message.content + " finished")
+
+    elif (maks == True):
+        if(str(message.author) == '299624636973449216'):
+            await client.send_message(client.get_channel(message.channel.id), 'Fuck off Maksa')
 
     #Read keyword in message response commands
     elif(message.content != ""):
@@ -250,19 +262,22 @@ async def on_message(message):
                 if(ListOfWords[i] != ""):
                     returnString = returnString + ", \'" + ListOfWords[i] + "\'"
         
-            if(returnString != ""):
+            if(1>0):
                 await client.send_message(client.get_channel(message.channel.id), returnString)
-    
+                
     #Random response
-    elif(random.randint(1,10) < 2):
+    if(3 < 2): #if(random.randint(1,10) < 2):
         if(str(message.author) != '386480630952624129'):    
             log("Message will be replied to")
-            if(str(message.author) == '262753744280616960'):
+            if(str(message.author.id) == '262753744280616960'):
                 await client.send_message(client.get_channel(message.channel.id), 'Praise you, ' + message.author.mention)
             else:
                 await client.send_message(client.get_channel(message.channel.id), 'Fuck you, ' + message.author.mention)
+        else:
+            log("Message will not be replied to")
     else:
         pass
 
 #Run bot
+log("Starting bot...")
 client.run(str(getToken()))
