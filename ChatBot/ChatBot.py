@@ -235,6 +235,13 @@ async def on_message(message):
             
                 await client.send_message(client.get_channel(message.channel.id), "Request " + message.content + " finished")
 
+    elif(message.channel.id == 717386874615890050 or message.channel.id == 717378910819713076):
+        if(message.attachments):
+            for a in message.attachments:
+                fp = "memes/" + a.id + a.filename
+                await a.save(fp)
+            await message.add_reaction(":laughing:")
+
     elif (maks == True):
         if(str(message.author) == '299624636973449216'):
             await client.send_message(client.get_channel(message.channel.id), 'Fuck off Maksa')
