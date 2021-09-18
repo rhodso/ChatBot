@@ -1,6 +1,7 @@
 #Imports
 import discord
 import asyncio
+from discord import guild
 from discord.ext.commands import Bot
 from discord.ext import commands
 import platform
@@ -8,6 +9,9 @@ import datetime
 import random
 import praw
 import time
+import youtube_dl
+import os
+#import PyNaCl
 
 #Maks switch
 maks = True
@@ -187,6 +191,44 @@ async def on_message(message):
         elif(message.content == (prefix + "ooer")):
             log("Running Ooer command...")
             await message.channel.send('@everyone Ooer')
+
+        #Play music test
+        elif(message.content[:5] == (prefix + "play")):
+            SplitMessage = message.content.split(" ")
+            log("Running play command")
+            songFile = os.path.isfile("song.mp3")
+            try:
+                if songFile:
+                    os.remove("song.mp3")
+            except:
+                log("Song already playing")
+                await message.channel.send("Wait for current song to end")
+                return
+
+            vc = discord.utils.get(message.channel.guild.voice_channels, name="General")
+            await vc.connect()
+            voice = discord.utils.get(client.voice_clients, guild = message.channel.guild)
+
+            ydlOpts = {
+                'format': 'bestaudio/best',
+                'postprocessors': [{
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'mp3',
+                    'preferredquality': '192',
+                }],
+            }
+
+            log("URL is: '" + SplitMessage[1] + "'")
+
+            with youtube_dl.YoutubeDL(ydlOpts) as ydl:
+                ydl.download([SplitMessage[1]])
+            for file in os.listdir("./"):
+                if(file.endswith(".mp3")):
+                    os.rename(file, "song.mp3")
+        
+            log("Playing song")
+
+            voice.play(discord.FFmpegPCMAudio("song.mp3"))
         
         #Wednesday command
         elif(message.content == (prefix + "wednesday")):
